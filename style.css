@@ -5,19 +5,202 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     min-height: 100vh;
     overflow-x: hidden;
 }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
+/* ===== ВИДЕО-ФОН (на весь экран сзади) ===== */
+.hero-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1; /* Видео на заднем плане */
+}
+
+.hero-video video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    object-fit: cover;
+}
+
+.hero-video .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Затемнение */
+    z-index: 1;
+}
+
+/* ===== СЕКЦИЯ АВТОРИЗАЦИИ (поверх видео) ===== */
+#auth-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
+    z-index: 1; /* Поверх видео */
+}
+
+.auth-container {
+    max-width: 450px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2); /* Более прозрачный */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    text-align: center;
+    backdrop-filter: blur(15px); /* Усилил эффект матового стекла */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 20px auto;
+    color: white;
+}
+
+.auth-container h1, 
+.auth-container p,
+.auth-form h2,
+.auth-switch {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.auth-container p {
+    color: rgba(255,255,255,0.9);
+}
+
+/* Основной контейнер для главного меню */
+.container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+/* Стили для главного меню и игровых секций с эффектом матового стекла */
+/* Стили для игровых секций с эффектом матового стекла */
+.game-section:not(#auth-section) {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    margin: 20px;
+    color: #000000 !important;
+    /* Убедимся, что содержимое тоже прозрачное */
+    transition: all 0.3s ease;
+}
+
+/* Убедимся, что вложенные контейнеры тоже прозрачные */
+.game-section:not(#auth-section) .story-container,
+.game-section:not(#auth-section) .typing-container,
+.game-section:not(#auth-section) .language-exercise,
+.game-section:not(#auth-section) .scientific-text,
+.game-section:not(#auth-section) .poetry-container,
+.game-section:not(#auth-section) .speed-reading {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Адаптация текста для матового фона */
+#main-menu h1,
+#main-menu h2,
+#main-menu h3,
+#main-menu p,
+#main-menu .subtitle,
+#main-menu .stat-label,
+.game-section:not(#auth-section) h1,
+.game-section:not(#auth-section) h2,
+.game-section:not(#auth-section) h3,
+.game-section:not(#auth-section) p {
+    color: #000000 !important; /* Чёрный цвет */
+    text-shadow: none; /* Убираем тень */
+}
+
+/* Стили для карточек режимов */
+.mode-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #000000 !important;
+}
+
+.mode-card h3 {
+    color: #000000 !important;
+}
+
+.mode-card p {
+    color: #333333 !important; /* Тёмно-серый для описания */
+}
+
+/* Стили для шапки игры */
+.game-header {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #000000 !important;
+}
+
+.user-info {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff; /* Белый для user-info, так как фон тёмный */
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #ffffff !important; /* Белый на тёмном фоне */
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000000 !important; /* Чёрный для цифр */
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    color: #000000 !important; /* Чёрный для подписей */
+}
+.user-info {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Скрываем все секции кроме активной */
@@ -42,16 +225,6 @@ body {
 }
 
 /* ===== СТИЛИ ДЛЯ ФОРМ АВТОРИЗАЦИИ ===== */
-.auth-container {
-    max-width: 400px;
-    margin: 50px auto;
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-    text-align: center;
-}
-
 .auth-form {
     display: none;
 }
@@ -61,35 +234,58 @@ body {
 }
 
 .auth-form h2 {
-    margin-bottom: 20px;
-    color: #667eea;
+    margin-bottom: 25px;
+    color: white;
+    font-size: 1.8rem;
 }
 
 .auth-input {
     width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    transition: all 0.3s;
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.auth-input::placeholder {
+    color: rgba(255,255,255,0.7);
 }
 
 .auth-input:focus {
-    border-color: #667eea;
+    border-color: white;
     outline: none;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.3);
 }
 
 .auth-switch {
-    color: #667eea;
+    color: white;
     cursor: pointer;
     text-decoration: underline;
-    margin-top: 15px;
+    margin-top: 20px;
     display: inline-block;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
 .auth-switch:hover {
-    color: #764ba2;
+    color: #FFEB3B;
+}
+
+.error-message {
+    color: #f44336;
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
 }
 
 /* ===== СТИЛИ ДЛЯ ГЛАВНОГО МЕНЮ ===== */
@@ -97,11 +293,14 @@ body {
     text-align: center;
     margin-bottom: 30px;
     padding: 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
     border-radius: 20px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .user-info {
@@ -109,16 +308,19 @@ body {
     top: 20px;
     right: 20px;
     text-align: right;
-    background: rgba(255,255,255,0.2);
+    background: rgba(0, 0, 0, 0.3);
     padding: 10px 15px;
     border-radius: 10px;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
     min-width: 200px;
 }
 
 .user-name {
     font-weight: bold;
     font-size: 1.1rem;
+    color: white;
 }
 
 .local-time {
@@ -130,8 +332,8 @@ body {
 }
 
 .logout-btn {
-    background: rgba(255,255,255,0.3);
-    border: none;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
     color: white;
     padding: 5px 10px;
     border-radius: 5px;
@@ -142,7 +344,7 @@ body {
 }
 
 .logout-btn:hover {
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.3);
 }
 
 .game-header h1 {
@@ -164,11 +366,14 @@ body {
     gap: 15px;
     margin-top: 20px;
     padding: 20px;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.1);
     border-radius: 15px;
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .stat-item {
@@ -194,6 +399,7 @@ body {
 .stat-label {
     font-size: 0.9rem;
     opacity: 0.9;
+    color: white;
 }
 
 /* Модальное окно для статистики */
@@ -215,7 +421,7 @@ body {
 }
 
 .modal-content {
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
     padding: 30px;
     border-radius: 20px;
     max-width: 600px;
@@ -223,6 +429,8 @@ body {
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .close-modal {
@@ -257,7 +465,7 @@ body {
 }
 
 .mode-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 20px;
     padding: 25px;
     cursor: pointer;
@@ -280,6 +488,7 @@ body {
     left: 0;
     right: 0;
     height: 5px;
+    background: linear-gradient(90deg, #FF9800, #FF5722);
 }
 
 .mode-card:nth-child(1)::before { background: linear-gradient(90deg, #FF9800, #FF5722); }
@@ -348,7 +557,7 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: #f5f5f5;
+    background: rgba(255,255,255,0.9);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.8rem;
@@ -427,7 +636,7 @@ body {
 .story-container {
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
+    background: rgba(255,255,255,0.9);
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     overflow: hidden;
@@ -445,6 +654,7 @@ body {
     max-height: 60vh;
     overflow-y: auto;
     line-height: 1.8;
+    color: #333;
 }
 
 .story-content p {
@@ -464,9 +674,10 @@ body {
 
 .questions-panel {
     padding: 30px;
-    background: #f8f9fa;
+    background: rgba(255,255,255,0.9);
     border-radius: 20px;
     margin-top: 30px;
+    color: #333;
 }
 
 .question {
@@ -493,7 +704,7 @@ body {
 }
 
 .nav-card {
-    background: white;
+    background: rgba(255,255,255,0.9);
     padding: 20px;
     border-radius: 15px;
     cursor: pointer;
@@ -513,11 +724,12 @@ body {
 }
 
 .ocean-content {
-    background: white;
+    background: rgba(255,255,255,0.9);
     padding: 30px;
     border-radius: 20px;
     margin-bottom: 30px;
     min-height: 400px;
+    color: #333;
 }
 
 .fact-box {
@@ -532,10 +744,11 @@ body {
 .typing-container {
     max-width: 800px;
     margin: 0 auto;
-    background: white;
+    background: rgba(255,255,255,0.9);
     border-radius: 20px;
     padding: 40px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    color: #333;
 }
 
 .typing-header {
@@ -553,6 +766,7 @@ body {
     font-family: 'Courier New', monospace;
     height: 200px;
     overflow-y: auto;
+    color: #333;
 }
 
 .current-char {
@@ -579,6 +793,7 @@ body {
     border-radius: 10px;
     font-family: 'Courier New', monospace;
     margin-bottom: 20px;
+    background: white;
 }
 
 .typing-stats {
@@ -698,12 +913,13 @@ body {
 
 /* ===== РЕЖИМ 5: НАУЧНЫЙ ТЕКСТ ===== */
 .scientific-text {
-    background: white;
+    background: rgba(255,255,255,0.9);
     padding: 40px;
     border-radius: 20px;
     margin-bottom: 30px;
     max-height: 600px;
     overflow-y: auto;
+    color: #333;
 }
 
 .scientific-term {
@@ -741,13 +957,14 @@ body {
 
 /* ===== РЕЖИМ 6: ПОЭЗИЯ ===== */
 .poetry-container {
-    background: white;
+    background: rgba(255,255,255,0.9);
     padding: 40px;
     border-radius: 20px;
     text-align: center;
     font-family: 'Georgia', serif;
     max-height: 600px;
     overflow-y: auto;
+    color: #333;
 }
 
 .poem-line {
@@ -773,12 +990,13 @@ body {
 .language-exercise {
     max-width: 800px;
     margin: 30px auto;
-    background: white;
+    background: rgba(255,255,255,0.9);
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     max-height: 600px;
     overflow-y: auto;
+    color: #333;
 }
 
 .translation-box {
@@ -808,13 +1026,14 @@ body {
 
 /* ===== РЕЖИМ 8: ТЕКСТ С ПРОПУСКАМИ ===== */
 .gap-text {
-    background: white;
+    background: rgba(255,255,255,0.9);
     padding: 40px;
     border-radius: 20px;
     font-size: 1.2rem;
     line-height: 1.8;
     max-height: 600px;
     overflow-y: auto;
+    color: #333;
 }
 
 .gap {
@@ -852,7 +1071,7 @@ body {
     background-color: #E8F5E9 !important;
 }
 
-/* ===== РЕЖИМ 9: ТЕСТ СКОРОСТИ ЧТЕНИЯ (ОБНОВЛЁННЫЙ) ===== */
+/* ===== РЕЖИМ 9: ТЕСТ СКОРОСТИ ЧТЕНИЯ ===== */
 .speed-reading {
     max-width: 100%;
     height: calc(100vh - 100px);
@@ -866,10 +1085,11 @@ body {
     margin-bottom: 30px;
     text-align: justify;
     padding: 20px;
-    background: #f8f9fa;
+    background: rgba(255,255,255,0.9);
     border-radius: 15px;
     height: 50vh;
     overflow-y: auto;
+    color: #333;
 }
 
 .speed-controls {
@@ -882,31 +1102,34 @@ body {
 
 .speed-btn {
     padding: 15px 30px;
-    background: #f0f0f0;
-    border: none;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
     border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
     min-width: 150px;
+    color: white;
 }
 
 .speed-btn:hover {
-    background: #e0e0e0;
+    background: rgba(255,255,255,0.3);
 }
 
 .speed-btn.active {
     background: #667eea;
     color: white;
+    border-color: #667eea;
 }
 
 .countdown-timer {
     font-size: 4rem;
     text-align: center;
-    color: #667eea;
+    color: #FFEB3B;
     font-weight: bold;
     margin: 20px 0;
     font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px rgba(255,235,59,0.5);
 }
 
 /* ===== ФУТЕР ===== */
@@ -914,15 +1137,15 @@ body {
     text-align: center;
     padding: 30px;
     margin-top: 50px;
-    color: #666;
+    color: rgba(255,255,255,0.8);
     font-size: 1rem;
-    border-top: 2px solid #ddd;
+    border-top: 1px solid rgba(255,255,255,0.2);
 }
 
 .copyright {
     margin-top: 15px;
     font-size: 0.9rem;
-    color: #999;
+    color: rgba(255,255,255,0.6);
 }
 
 /* ===== АДАПТИВНОСТЬ ===== */
@@ -991,8 +1214,8 @@ body {
     }
     
     .auth-container {
-        padding: 20px;
-        margin: 20px auto;
+        padding: 30px 20px;
+        margin: 20px;
     }
     
     .user-info {
@@ -1028,7 +1251,7 @@ body {
 .progress-bar {
     width: 100%;
     height: 20px;
-    background-color: #f0f0f0;
+    background-color: rgba(255,255,255,0.2);
     border-radius: 10px;
     margin: 10px 0;
     overflow: hidden;
@@ -1045,13 +1268,239 @@ body {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
+    color: white;
 }
 
 /* Стили для теста скорости чтения */
 .reading-info {
     margin-top: 20px;
     padding: 10px;
-    background: #f0f8ff;
+    background: rgba(255,255,255,0.2);
     border-radius: 8px;
     font-size: 0.9rem;
+    color: white;
+}
+
+/* Исправление для кликабельности режимов */
+.mode-card {
+    cursor: pointer !important;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
+    transition: all 0.4s ease;
+    user-select: none; /* Предотвращает выделение текста при клике */
+}
+
+.modes-grid {
+    position: relative;
+    z-index: 5;
+    pointer-events: auto;
+}
+
+/* Убедимся, что видео не перехватывает клики */
+.hero-video {
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+.game-section.active {
+    display: block !important;
+    position: relative !important;
+    z-index: 5 !important;
+    pointer-events: auto !important;
+}
+
+#main-menu.active {
+#main-menu.active {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 5;
+}
+
+.modes-grid {
+    position: relative !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+}
+
+/* Убедимся, что видео не перекрывает клики */
+.hero-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1 !important; /* Видео на заднем плане */
+    pointer-events: none !important; /* Видео не перехватывает клики */
+}
+
+/* Затемнение фона при открытом режиме */
+body.game-active {
+    overflow: hidden; /* Запрещаем прокрутку основного контента */
+}
+
+body.game-active .hero-video {
+    filter: blur(5px);
+    transition: filter 0.3s ease;
+}
+
+/* Делаем активную секцию похожей на модальное окно */
+body.game-active .game-section.active {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    width: auto;
+    height: auto;
+    max-width: 1400px;
+    margin: 0 auto;
+    z-index: 1000;
+    overflow-y: auto;
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Стили для прокрутки внутри модального окна */
+body.game-active .game-section.active .story-content,
+body.game-active .game-section.active .scientific-text,
+body.game-active .game-section.active .speed-text {
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+/* Универсальные стили для содержимого игровых секций */
+.game-section:not(#auth-section) h1,
+.game-section:not(#auth-section) h2,
+.game-section:not(#auth-section) h3,
+.game-section:not(#auth-section) h4 {
+    color: #000000;
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.game-section:not(#auth-section) p,
+.game-section:not(#auth-section) li,
+.game-section:not(#auth-section) .story-content,
+.game-section:not(#auth-section) .question p {
+    color: #000000;
+    font-weight: 500;
+}
+
+/* Стили для кнопок внутри стеклянных секций */
+.game-section:not(#auth-section) .action-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.game-section:not(#auth-section) .action-btn.secondary {
+    background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);
+}
+
+.game-section:not(#auth-section) .action-btn.danger {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+}
+
+/* Стили для полей ввода */
+.game-section:not(#auth-section) input,
+.game-section:not(#auth-section) textarea {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #000000;
+}
+
+.game-section:not(#auth-section) input:focus,
+.game-section:not(#auth-section) textarea:focus {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Стили для карточек внутри секций */
+.game-section:not(#auth-section) .fact-item,
+.game-section:not(#auth-section) .question,
+.game-section:not(#auth-section) .sentence-item,
+.game-section:not(#auth-section) .translation-box {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+/* Стили для подсветки текста */
+.game-section:not(#auth-section) .highlight-problem,
+.game-section:not(#auth-section) .highlight-feeling,
+.game-section:not(#auth-section) .highlight-solution {
+    background: rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+/* Улучшенные стили для кнопки "Назад" */
+.game-section .back-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: bold;
+    z-index: 1001;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.game-section .back-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateX(-5px);
+}
+
+@media (max-width: 768px) {
+    /* Мобильная версия модального окна */
+    body.game-active .game-section.active {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        padding: 15px;
+    }
+    
+    .game-section .back-btn {
+        top: 10px;
+        left: 10px;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    /* Уменьшаем отступы для мобильных */
+    .game-section:not(#auth-section) .story-container,
+    .game-section:not(#auth-section) .typing-container,
+    .game-section:not(#auth-section) .language-exercise,
+    .game-section:not(#auth-section) .scientific-text,
+    .game-section:not(#auth-section) .poetry-container,
+    .game-section:not(#auth-section) .speed-reading {
+        padding: 15px;
+    }
+    
+    body.game-active .game-section.active .story-content,
+    body.game-active .game-section.active .scientific-text,
+    body.game-active .game-section.active .speed-text {
+        max-height: calc(100vh - 200px);
+    }
 }
