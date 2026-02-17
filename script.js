@@ -127,10 +127,130 @@ function checkAuth() {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser && users[savedUser]) {
         currentUser = savedUser;
+        // Загружаем статистику пользователя
+        if (users[currentUser] && users[currentUser].stats) {
+            gameStats = users[currentUser].stats;
+        } else {
+            // Если статистики нет, создаем новую
+            initUserStats(currentUser);
+        }
         return true;
     }
     return false;
 }
+
+// Вход пользователя (исправленная версия)
+function loginUser(username, password) {
+    console.log('Попытка входа:', username);
+    console.log('Существующие пользователи:', users);
+    
+    if (!users[username]) {
+        console.log('Пользователь не найден');
+        return { success: false, message: 'Пользователь не найден' };
+    }
+    
+    console.log('Пароль из БД:', users[username].password);
+    console.log('Введенный пароль:', password);
+    
+    if (users[username].password !== password) {
+        console.log('Неверный пароль');
+        return { success: false, message: 'Неверный пароль' };
+    }
+    
+    currentUser = username;
+    localStorage.setItem('currentUser', username);
+    
+    // Загружаем статистику пользователя
+    if (users[username].stats) {
+        gameStats = users[username].stats;
+        console.log('Статистика загружена:', gameStats);
+    } else {
+        // Если статистики нет, создаем новую
+        initUserStats(username);
+        gameStats = users[username].stats;
+        console.log('Создана новая статистика');
+    }
+    
+    // Обновляем время последней активности
+    users[username].stats.lastActivity = new Date().toISOString();
+    saveUsers();
+    
+    console.log('Вход успешен');
+    return { success: true, message: 'Вход успешен' };
+}
+
+// Инициализация статистики при загрузке главного меню
+function showMainMenu() {
+    console.log('===== showMainMenu() START =====');
+    
+    // Скрываем секцию авторизации
+    const authSection = document.getElementById('auth-section');
+    if (authSection) {
+        authSection.classList.remove('active');
+        authSection.style.display = 'none'; // Добавляем принудительное скрытие
+        console.log('authSection скрыта');
+    }
+    
+    // Показываем главное меню
+    const mainMenu = document.getElementById('main-menu');
+    if (mainMenu) {
+        mainMenu.classList.add('active');
+        mainMenu.style.display = 'block'; // Принудительно показываем
+        console.log('mainMenu показано');
+    }
+    
+    // Скрываем все остальные игровые секции на всякий случай
+    const gameSections = document.querySelectorAll('.game-section:not(#auth-section):not(#main-menu)');
+    gameSections.forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none';
+    });
+    
+    // Обновляем отображение статистики
+    updateStatsDisplay();
+    
+    // Обновляем имя пользователя в шапке
+    const usernameElement = document.getElementById('current-username');
+    if (usernameElement && currentUser) {
+        usernameElement.textContent = currentUser;
+        console.log('Имя пользователя обновлено на:', currentUser);
+    }
+    
+    // Запускаем таймеры
+    initTimers();
+    
+    console.log('===== showMainMenu() END =====');
+}
+
+// Добавьте эту функцию для обработчика кнопки входа
+document.getElementById('login-btn')?.addEventListener('click', function() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    
+    if (!username || !password) {
+        alert('Заполните все поля!');
+        return;
+    }
+    
+    const result = loginUser(username, password);
+    if (result.success) {
+        console.log('Вход успешен, вызываем showMainMenu()');
+        
+        // Инициализируем статистику
+        initStats();
+        
+        // Показываем главное меню
+        showMainMenu();
+        
+        // Показываем уведомление ТОЛЬКО ОДИН РАЗ
+        // Добавляем небольшую задержку для гарантии, что меню загрузилось
+        setTimeout(() => {
+            alert('Добро пожаловать, ' + username + '!');
+        }, 100);
+    } else {
+        alert('Ошибка: ' + result.message);
+    }
+});
 
 // Переключение между формами авторизации и регистрации
 function switchAuthForm(formType) {
@@ -787,7 +907,7 @@ const poems = [
     },
     {
         title: "Я вас любил...",
-        author: "А.С. Пушkin",
+        author: "А.С. Пушкин",
         lines: [
             "Я вас любил: любовь ещё, быть может,",
             "В душе моей угасла не совсем;",
@@ -1402,53 +1522,71 @@ function closeAnswersModal() {
 
 // ===== УПРАВЛЕНИЕ ИГРАМИ =====
 function startGame(gameNumber) {
+    console.log('startGame вызван с номером:', gameNumber);
     currentGame = gameNumber;
     
     // Скрыть все секции
     const sections = document.querySelectorAll('.game-section');
     sections.forEach(section => {
         section.classList.remove('active');
+        section.style.display = 'none';
     });
     
     // Показать выбранную секцию
     const targetSection = document.getElementById(`game-${gameNumber}`);
     if (targetSection) {
         targetSection.classList.add('active');
+        targetSection.style.display = 'block';
+        console.log('Показана секция:', `game-${gameNumber}`);
+        
+        // Плавно прокручиваем страницу вверх
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    } else {
+        console.error('Секция не найдена:', `game-${gameNumber}`);
     }
     
     // Инициализация конкретного режима
-    switch(gameNumber) {
-        case 1:
-            loadRandomStory();
-            initAnswersButton(1);
-            break;
-        case 2:
-            showRandomOceanFact();
-            break;
-        case 3:
-            initTypingGame();
-            break;
-        case 4:
-            loadHistoricalFacts();
-            break;
-        case 5:
-            loadScientificArticle();
-            break;
-        case 6:
-            loadPoem();
-            break;
-        case 7:
-            loadEnglishSentence();
-            initAnswersButton(7);
-            break;
-        case 8:
-            loadGapSentence();
-            initAnswersButton(8);
-            break;
-        case 9:
-            initSpeedReading();
-            initAnswersButton(9);
-            break;
+    try {
+        switch(gameNumber) {
+            case 1:
+                loadRandomStory();
+                initAnswersButton(1);
+                break;
+            case 2:
+                showRandomOceanFact();
+                break;
+            case 3:
+                initTypingGame();
+                break;
+            case 4:
+                loadHistoricalFacts();
+                break;
+            case 5:
+                loadScientificArticle();
+                break;
+            case 6:
+                loadPoem();
+                break;
+            case 7:
+                loadEnglishSentence();
+                initAnswersButton(7);
+                break;
+            case 8:
+                loadGapSentence();
+                initAnswersButton(8);
+                break;
+            case 9:
+                initSpeedReading();
+                initAnswersButton(9);
+                break;
+            default:
+                console.log('Неизвестный режим:', gameNumber);
+        }
+    } catch (e) {
+        console.error('Ошибка при инициализации режима:', e);
     }
     
     // Обновить статистику
@@ -1469,6 +1607,17 @@ function backToMenu() {
     if (mainMenu) {
         mainMenu.classList.add('active');
     }
+    // Убираем класс затемнения
+    document.body.classList.remove('game-active');
+    
+    // Плавно прокручиваем к главному меню
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }, 100);
+    
     saveStats();
 }
 
@@ -2751,26 +2900,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== ОБРАБОТЧИКИ СОБЫТИЙ ДЛЯ АВТОРИЗАЦИИ =====
     
-    // Кнопка входа
-    document.getElementById('login-btn')?.addEventListener('click', function() {
-        const username = document.getElementById('login-username').value.trim();
-        const password = document.getElementById('login-password').value;
-        
-        if (!username || !password) {
-            alert('Заполните все поля!');
-            return;
-        }
-        
-        const result = loginUser(username, password);
-        if (result.success) {
-            initStats();
-            showMainMenu();
-            alert('Добро пожаловать, ' + username + '!');
-        } else {
-            alert('Ошибка: ' + result.message);
-        }
-    });
-    
     // Кнопка регистрации
     document.getElementById('register-btn')?.addEventListener('click', function() {
         const username = document.getElementById('register-username').value.trim();
@@ -2965,18 +3094,88 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Все обработчики событий установлены');
 });
 
-// Функции для управления отображением секций
-function showAuthSection() {
-    document.querySelectorAll('.game-section').forEach(section => {
-        section.classList.remove('active');
+// Принудительно перепривязываем обработчики для карточек
+function reattachModeCardListeners() {
+    const cards = document.querySelectorAll('.mode-card');
+    console.log('Найдено карточек для привязки:', cards.length);
+    
+    cards.forEach((card, index) => {
+        // Удаляем старые обработчики
+        card.removeEventListener('click', card.clickHandler);
+        
+        // Создаем новый обработчик
+        card.clickHandler = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const gameNumber = parseInt(this.dataset.game);
+            console.log('Карточка нажата:', gameNumber);
+            
+            if (!isNaN(gameNumber)) {
+                startGame(gameNumber);
+            } else {
+                console.error('Некорректный номер режима:', this.dataset.game);
+            }
+        };
+        
+        // Добавляем новый обработчик
+        card.addEventListener('click', card.clickHandler);
+        
+        // Добавляем визуальную обратную связь
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 15px 30px rgba(0,0,0,0.2)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+        });
     });
-    document.getElementById('auth-section').classList.add('active');
 }
 
-function showMainMenu() {
-    document.querySelectorAll('.game-section').forEach(section => {
+// Вызываем перепривязку
+reattachModeCardListeners();
+
+// Также добавим обработчик для проверки кликов по документу
+document.addEventListener('click', function(e) {
+    // Проверяем, был ли клик по карточке или её дочерним элементам
+    const card = e.target.closest('.mode-card');
+    if (card) {
+        console.log('Клик по карточке через делегирование');
+        // Предотвращаем двойную обработку
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const gameNumber = parseInt(card.dataset.game);
+        if (!isNaN(gameNumber)) {
+            startGame(gameNumber);
+        }
+    }
+}, true); // Используем capturing фазу для раннего перехвата
+
+// Функции для управления отображением секций
+function showAuthSection() {
+    console.log('Показываем секцию авторизации');
+    
+    // Скрываем главное меню
+    const mainMenu = document.getElementById('main-menu');
+    if (mainMenu) {
+        mainMenu.classList.remove('active');
+        mainMenu.style.display = 'none';
+    }
+    
+    // Показываем секцию авторизации
+    const authSection = document.getElementById('auth-section');
+    if (authSection) {
+        authSection.classList.add('active');
+        authSection.style.display = 'flex'; // или 'block' в зависимости от CSS
+        console.log('authSection показана');
+    }
+    
+    // Скрываем все игровые секции
+    const gameSections = document.querySelectorAll('.game-section:not(#auth-section):not(#main-menu)');
+    gameSections.forEach(section => {
         section.classList.remove('active');
+        section.style.display = 'none';
     });
-    document.getElementById('main-menu').classList.add('active');
-    updateStatsDisplay();
 }
