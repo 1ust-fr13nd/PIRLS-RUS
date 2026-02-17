@@ -1055,3 +1055,114 @@ body {
     border-radius: 8px;
     font-size: 0.9rem;
 }
+
+/* ===== ВИДЕО-БЛОК НА ПЕРВОМ ЭКРАНЕ ===== */
+.hero-video {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* На весь экран */
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.hero-video video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    object-fit: cover; /* Видео покрывает весь блок без искажений */
+    z-index: 0;
+}
+
+/* Затемнение для читаемости текста */
+.hero-video .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 40% затемнения */
+    z-index: 1;
+}
+
+/* Контент поверх видео */
+.hero-video .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2;
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.hero-video .hero-content h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem); /* Адаптивный размер */
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-video .hero-content p {
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Кнопка прокрутки */
+.hero-video .scroll-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border: 2px solid white;
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hero-video .scroll-btn:hover {
+    background: white;
+    color: black;
+    border-color: transparent;
+}
+
+/* Плавный скролл */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .hero-video {
+        height: 90vh; /* Чуть меньше на телефонах */
+    }
+    
+    .hero-video .hero-content {
+        width: 95%;
+    }
+    
+    .hero-video .hero-content h1 {
+        margin-bottom: 0.5rem;
+    }
+    
+    .hero-video .scroll-btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-video {
+        height: 80vh;
+    }
+}
