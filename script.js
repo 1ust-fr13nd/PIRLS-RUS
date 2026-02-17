@@ -1599,15 +1599,24 @@ function startGame(gameNumber) {
 }
 
 function backToMenu() {
+    console.log('Возврат в главное меню');
     currentGame = 0;
+    
+    // Скрываем все секции
     document.querySelectorAll('.game-section').forEach(section => {
         section.classList.remove('active');
+        section.style.display = 'none';
     });
+    
+    // Показываем главное меню
     const mainMenu = document.getElementById('main-menu');
     if (mainMenu) {
         mainMenu.classList.add('active');
+        mainMenu.style.display = 'block';
+        console.log('Главное меню показано');
     }
-    // Убираем класс затемнения
+    
+    // Убираем класс game-active с body
     document.body.classList.remove('game-active');
     
     // Плавно прокручиваем к главному меню
